@@ -1,0 +1,23 @@
+---
+
+# https://forgejo.org/docs/latest/admin/command-line/#doctor-check
+
+- name: Diagnose
+  block:
+    - name: Diagnose
+      ansible.builtin.command: >-
+        {{ docker_cmd }} compose exec -u git forgejo
+          forgejo doctor check --color=false
+      args:
+        chdir: "{{ docker_project_path }}"
+      register: _doctor_check
+      changed_when: false
+
+    - name: Show diagnose result
+      ansible.builtin.debug:
+        msg: "{{ _doctor_check.stdout_lines }}"
+
+  rescue:
+    - name: Show diagnose error
+      ansible.builtin.debug:
+        msg: "{{ _doctor_check.stderr_lines }}"

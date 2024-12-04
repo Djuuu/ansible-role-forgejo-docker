@@ -1,0 +1,49 @@
+---
+
+docker_project_name: "{{ forgejo_project_name }}"
+
+
+# Default path to git repositories (in project data directory)
+forgejo_git_repositories_default: ./data/git/repositories
+
+# Default Forgejo log directory (in project data directory)
+forgejo_log_directory_default: ./data/gitea/log
+
+
+# Forgejo environment configuration
+# See:
+# - https://forgejo.org/docs/latest/admin/installation-docker/#configuration
+# - https://forgejo.org/docs/latest/admin/config-cheat-sheet/
+# - https://codeberg.org/forgejo/forgejo/src/branch/forgejo/custom/conf/app.example.ini
+#
+forgejo_env_config_default:
+
+  ## Disable CDN even in "prod" mode
+  FORGEJO__server__OFFLINE_MODE: true
+
+  # The minimum password length for new Users
+  FORGEJO__security__MIN_PASSWORD_LENGTH: 12 # default: 8
+
+  ## Disallow registration, only allow admins to create accounts.
+  FORGEJO__service__DISABLE_REGISTRATION: true
+  ## Each new user will get the value of this setting copied into their profile
+  FORGEJO__service__DEFAULT_KEEP_EMAIL_PRIVATE: true
+  ## Every new user will have rights set to create organizations depending on this setting
+  FORGEJO__service__DEFAULT_ALLOW_CREATE_ORGANIZATION: false
+  ## Either "public", "limited" or "private", default is "public"
+  FORGEJO__service__DEFAULT_USER_VISIBILITY: limited
+  ## Repositories will use timetracking by default depending on this setting
+  FORGEJO__service__DEFAULT_ENABLE_TIMETRACKING: false
+  ## Show Registration button
+  FORGEJO__service__SHOW_REGISTRATION_BUTTON: false
+  ## Show milestones dashboard page - a view of all the user's milestones
+  FORGEJO__service__SHOW_MILESTONES_DASHBOARD_PAGE: false
+
+  ## Whether to allow signin in via OpenID
+  FORGEJO__openid__ENABLE_OPENID_SIGNIN: false
+  ## Whether to allow registering via OpenID. Do not include to rely on rhw DISABLE_REGISTRATION setting
+  FORGEJO__openid__ENABLE_OPENID_SIGNUP: false
+
+
+# Merge role defaults (vars/main.yml) and user conf (defaults/main.yml + group/host/playbook vars)
+forgejo_env_config_merged: "{{ forgejo_env_config_default | ansible.builtin.combine(forgejo_env_config) }}"

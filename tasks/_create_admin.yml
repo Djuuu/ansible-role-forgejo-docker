@@ -1,0 +1,45 @@
+---
+
+# https://forgejo.org/docs/latest/admin/command-line/#admin-user-list
+
+- name: Count admin users
+  ansible.builtin.shell:
+    cmd: |
+      set -o pipefail
+      {{ docker_cmd }} compose exec -u git forgejo \
+        forgejo admin user list --admin | tail -n +2 | wc -l
+    executable: /bin/bash
+  args:
+    chdir: "{{ docker_project_path }}"
+  changed_when: false
+  register: _admin_count
+
+
+# https://forgejo.org/docs/latest/admin/command-line/#admin-user-create
+
+- name: Create admin user
+  when: _admin_count.stdout | int < 1
+  block:
+    - name: Create admin user
+      ansible.builtin.command: >-
+        {{ docker_cmd }} compose exec -u git forgejo
+          forgejo admin user create
+            --admin
+            --username "{{ forgejo_admin_username }}"
+            --email "{{ forgejo_admin_email }}"
+            --password "{{ forgejo_admin_password }}"
+            {{ forgejo_admin_must_change_pwd | default(false) | ternary('--must-change-password', '') }}
+      args:
+        chdir: "{{ docker_project_path }}"
+      register: _create_admin
+      changed_when: true
+      no_log: true
+
+    - name: Show admin creation result
+      ansible.builtin.debug:
+        msg: "{{ _create_admin.stdout_lines }}"
+
+  rescue:
+    - name: Show admin creation error
+      ansible.builtin.debug:
+        msg: "{{ _create_admin.stderr_lines }}"

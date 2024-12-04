@@ -1,0 +1,71 @@
+---
+
+## Init
+
+- name: Ensure project directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ docker_project_path }}"
+    - "{{ docker_project_path }}/data"
+  tags: ["init"]
+
+- name: Ensure database directory exists
+  when: forgejo_database in ['mysql', 'postgres']
+  ansible.builtin.file:
+    path: "{{ docker_project_path }}/{{ forgejo_database }}"
+    state: directory
+    mode: '0755'
+  tags: ["init"]
+
+- name: Check git repositories directory is writeable
+  when: forgejo_git_repositories != forgejo_git_repositories_default
+  ansible.builtin.stat: { path: "{{ forgejo_git_repositories }}" }
+  register: _dir
+  failed_when: not _dir.stat.exists or not _dir.stat.writeable or not (_dir.stat.isdir or _dir.stat.islnk)
+  tags: ["init"]
+
+- name: Ensure log directory exists
+  when: forgejo_log_directory != forgejo_log_directory_default
+  ansible.builtin.file:
+    path: "{{ forgejo_log_directory }}"
+    state: directory
+    mode: '0755'
+  tags: ["init"]
+
+## Configure
+
+- name: Template .env
+  ansible.builtin.template:
+    src: .env.j2
+    dest: "{{ docker_project_path }}/.env"
+    mode: '0600'
+
+- name: Template docker-compose.yml
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ docker_project_path }}/docker-compose.yml"
+    mode: '0644'
+    # validate: "{{ docker_cmd }} compose -f %s config"
+    backup: true
+
+- name: Validate docker-compose.yml
+  ansible.builtin.command: "{{ docker_cmd }} compose -f {{ docker_project_path }}/docker-compose.yml config"
+  changed_when: false
+
+## Run
+
+- name: Start app
+  ansible.builtin.include_role: { name: djuuu.docker_project, tasks_from: compose-up }
+
+## Init admin
+
+- name: Ensure admin user exists
+  ansible.builtin.include_tasks: tasks/_create_admin.yml
+
+## Diagnose
+
+- name: Diagnose
+  ansible.builtin.include_tasks: tasks/_doctor_check.yml

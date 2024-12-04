@@ -1,0 +1,89 @@
+#jinja2: trim_blocks: True, lstrip_blocks: True
+# {{ ansible_managed }}
+# {{ template_fullpath }}
+
+name: {{ docker_project_slug }}
+
+services:
+
+  forgejo:
+    container_name: {{ docker_project_slug }}
+    image: codeberg.org/forgejo/forgejo:{{ forgejo_version }}
+    restart: unless-stopped
+
+    {{ docker_project_compose_service_additional_options | indent(4) }}
+
+    {% if forgejo_database in ['mysql', 'postgres'] %}
+    depends_on:
+      - db
+    {% endif %}
+
+    env_file:
+      - .env
+    environment:
+      - USER_UID={{ ansible_user_uid }}
+      - USER_GID={{ ansible_user_gid }}
+
+      - FORGEJO__database__DB_TYPE={{ forgejo_database }}
+      {% if forgejo_database == 'mysql' %}
+      - FORGEJO__database__HOST=db:3306
+      {% elif forgejo_database == 'postgres' %}
+      - FORGEJO__database__HOST=db:5432
+      {% endif %}
+
+    volumes:
+      # System
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+      # Forgejo data directory
+      - ./data:/data
+
+      {% if forgejo_git_repositories != forgejo_git_repositories_default %}
+      # Git repositories
+      - {{ forgejo_git_repositories | default('./data/git/repositories') }}:/data/git/repositories
+      {% endif %}
+      {% if forgejo_log_directory != forgejo_log_directory_default %}
+      # Forgejo logs
+      - {{ forgejo_log_directory | default('./data/gitea/log') }}:/data/gitea/log
+      {% endif %}
+
+    labels:
+      {{ traefik_project_base_labels | indent(6) }}
+
+      # What's up Docker? - https://github.com/getwud/wud
+      wud.tag.include: ^\d+$$
+      wud.watch.digest: true
+
+  {% if forgejo_database == 'mysql' %}
+  db:
+    image: mysql:{{ forgejo_database_mysql_version }}
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD={{ forgejo_database_mysql_root_password }}
+      - MYSQL_USER={{ forgejo_database_mysql_user }}
+      - MYSQL_PASSWORD={{ forgejo_database_mysql_password }}
+      - MYSQL_DATABASE={{ forgejo_database_mysql_database }}
+    networks:
+      - default
+    volumes:
+      - ./mysql:/var/lib/mysql
+
+  {% elif forgejo_database == 'postgres' %}
+  db:
+    image: postgres:{{ forgejo_database_postgres_version }}
+    restart: always
+    environment:
+      - POSTGRES_USER={{ forgejo_database_postgres_user }}
+      - POSTGRES_PASSWORD={{ forgejo_database_postgres_password }}
+      - POSTGRES_DB={{ forgejo_database_postgres_db }}
+    networks:
+      - default
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+  {% endif %}
+
+networks:
+  {{ docker_project_default_network | indent(2) }}
+
+{{ docker_project_compose_additional_options }}
