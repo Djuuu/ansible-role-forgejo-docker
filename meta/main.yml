@@ -7,7 +7,7 @@ dependencies:
 
 galaxy_info:
   namespace: djuuu
-  role_name: djuuu.forgejo_docker
+  role_name: forgejo_docker
   author: Julien Tardot
   description: Install Forgejo Docker Compose project.
 
