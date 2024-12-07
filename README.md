@@ -32,10 +32,8 @@ forgejo_project_name: forgejo
 
 # Docker project dynamic vars (uses `docker_project_name` prefix, adapt if overriden)
 
+# Port targeted by Traefik router
 forgejo_traefik_loadbalancer_server_port: 3000
-forgejo_traefik_middlewares:
-  - "allow-frames@file"
-  - "{{ docker_project_slug }}-cors@docker"
 
 # Main service additional docker-compose options (ex: cpu_shares, deploy, ...)
 forgejo_compose_service_additional_options: |
