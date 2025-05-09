@@ -19,7 +19,7 @@ forgejo_compose_service_additional_options: |
 # Forgejo Docker project variables
 
 # codeberg.org/forgejo/forgejo image version
-forgejo_version: 10
+forgejo_version: 11
 
 # UID container is running as
 forgejo_puid: "{{ ansible_user_uid }}"
