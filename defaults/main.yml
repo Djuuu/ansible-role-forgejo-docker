@@ -88,8 +88,13 @@ forgejo_env_config:
   ## Domain name to be exposed in clone URL
   # FORGEJO__server__SSH_DOMAIN: forgejo.example.net
 
-  ## Port number to be exposed in clone URL
+  ## SSH port displayed in the clone URL
   # FORGEJO__server__SSH_PORT: "{{ forgejo_ssh_port }}"
+
+  ## Port for the built-in SSH server
+  # FORGEJO__server__SSH_LISTEN_PORT: 22
+  ## Port for the OpenSSH server
+  #SSH_LISTEN_PORT: 22
 
   ## Enables git-lfs support. true or false, default is false.
   # FORGEJO__server__LFS_START_SERVER: true
