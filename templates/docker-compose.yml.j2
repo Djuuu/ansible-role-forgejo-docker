@@ -10,6 +10,9 @@ services:
     container_name: {{ docker_project_slug }}
     image: codeberg.org/forgejo/forgejo:{{ forgejo_version }}
     restart: unless-stopped
+    {% if forgejo_network_mode == 'host' %}
+    network_mode: host
+    {% endif %}
 
     {{ docker_project_compose_service_additional_options | indent(4) }}
 
@@ -83,7 +86,9 @@ services:
       - ./postgres:/var/lib/postgresql/data
   {% endif %}
 
+{% if forgejo_network_mode != 'host' %}
 networks:
   {{ docker_project_default_network | indent(2) }}
+{% endif %}
 
 {{ docker_project_compose_additional_options }}

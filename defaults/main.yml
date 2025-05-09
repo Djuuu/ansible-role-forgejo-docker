@@ -31,6 +31,9 @@ forgejo_http_port: 3000
 # Port bound to host for SSH
 forgejo_ssh_port: 8022
 
+# Forgejo network mode (bridge|host)
+forgejo_network_mode: bridge
+
 # Path to git repositories (mounted as a volume)
 forgejo_git_repositories: "{{ forgejo_git_repositories_default }}"
 
