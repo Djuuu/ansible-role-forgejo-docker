@@ -48,6 +48,11 @@ forgejo_compose_service_additional_options: |
 # codeberg.org/forgejo/forgejo image version
 forgejo_version: 10
 
+# UID container is running as
+forgejo_puid: "{{ ansible_user_uid }}"
+# GID container is running as
+forgejo_pgid: "{{ ansible_user_gid }}"
+
 # Port bound to host for HTTP
 forgejo_http_port: 3000
 # Port bound to host for SSH

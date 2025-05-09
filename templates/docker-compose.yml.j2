@@ -21,8 +21,8 @@ services:
     env_file:
       - .env
     environment:
-      - USER_UID={{ ansible_user_uid }}
-      - USER_GID={{ ansible_user_gid }}
+      - USER_UID={{ forgejo_puid }}
+      - USER_GID={{ forgejo_pgid }}
 
       - FORGEJO__database__DB_TYPE={{ forgejo_database }}
       {% if forgejo_database == 'mysql' %}
