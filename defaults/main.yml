@@ -31,10 +31,20 @@ forgejo_http_port: 3000
 # Port bound to host for SSH
 forgejo_ssh_port: 8022
 
-# Path to git repositories (mounted as a volume)
+# Path to git repositories (mounted as a volume, if different from default)
 forgejo_git_repositories: "{{ forgejo_git_repositories_default }}"
 
-# Path to Forgejo logs (mounted as a volume)
+# Path to Forgejo storage directories (mounted as volumes, if different from default)
+forgejo_storage_attachments:       "{{ forgejo_storage_attachments_default }}"
+forgejo_storage_lfs:               "{{ forgejo_storage_lfs_default }}"
+forgejo_storage_avatars:           "{{ forgejo_storage_avatars_default }}"
+forgejo_storage_repo_avatars:      "{{ forgejo_storage_repo_avatars_default }}"
+forgejo_storage_repo_archive:      "{{ forgejo_storage_repo_archive_default }}"
+forgejo_storage_packages:          "{{ forgejo_storage_packages_default }}"
+forgejo_storage_actions_log:       "{{ forgejo_storage_actions_log_default }}"
+forgejo_storage_actions_artifacts: "{{ forgejo_storage_actions_artifacts_default }}"
+
+# Path to Forgejo logs (mounted as a volume, if different from default)
 forgejo_log_directory: "{{ forgejo_log_directory_default }}"
 
 

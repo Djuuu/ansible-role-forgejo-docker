@@ -43,11 +43,45 @@ services:
 
       {% if forgejo_git_repositories != forgejo_git_repositories_default %}
       # Git repositories
-      - {{ forgejo_git_repositories | default('./data/git/repositories') }}:/data/git/repositories
+      - {{ forgejo_git_repositories | default(forgejo_git_repositories_default) }}:/data/git/repositories
       {% endif %}
+
+      {% if forgejo_storage_attachments != forgejo_storage_attachments_default %}
+      # Storage: Attachments
+      - {{ forgejo_storage_attachments | default(forgejo_storage_attachments_default) }}:/data/gitea/attachments
+      {% endif %}
+      {% if forgejo_storage_lfs != forgejo_storage_lfs_default %}
+      # Storage: LFS
+      - {{ forgejo_storage_lfs | default(forgejo_storage_lfs_default) }}:/data/git/lfs
+      {% endif %}
+      {% if forgejo_storage_avatars != forgejo_storage_avatars_default %}
+      # Storage: Avatars
+      - {{ forgejo_storage_avatars | default(forgejo_storage_avatars_default) }}:/data/gitea/avatars
+      {% endif %}
+      {% if forgejo_storage_repo_avatars != forgejo_storage_repo_avatars_default %}
+      # Storage: Repository avatars
+      - {{ forgejo_storage_repo_avatars | default(forgejo_storage_repo_avatars_default) }}:/data/gitea/repo-avatars
+      {% endif %}
+      {% if forgejo_storage_repo_archive != forgejo_storage_repo_archive_default %}
+      # Storage: Repository archives
+      - {{ forgejo_storage_repo_archive | default(forgejo_storage_repo_archive_default) }}:/data/gitea/repo-archive
+      {% endif %}
+      {% if forgejo_storage_packages != forgejo_storage_packages_default %}
+      # Storage: Packages
+      - {{ forgejo_storage_packages | default(forgejo_storage_packages_default) }}:/data/gitea/packages
+      {% endif %}
+      {% if forgejo_storage_actions_log != forgejo_storage_actions_log_default %}
+      # Storage: Actions logs
+      - {{ forgejo_storage_actions_log | default(forgejo_storage_actions_log_default) }}:/data/gitea/actions_log
+      {% endif %}
+      {% if forgejo_storage_actions_artifacts != forgejo_storage_actions_artifacts_default %}
+      # Storage: Actions Artifacts
+      - {{ forgejo_storage_actions_artifacts | default(forgejo_storage_actions_artifacts_default) }}:/data/gitea/actions_artifacts
+      {% endif %}
+
       {% if forgejo_log_directory != forgejo_log_directory_default %}
       # Forgejo logs
-      - {{ forgejo_log_directory | default('./data/gitea/log') }}:/data/gitea/log
+      - {{ forgejo_log_directory | default(forgejo_log_directory_default) }}:/data/gitea/log
       {% endif %}
 
     labels:

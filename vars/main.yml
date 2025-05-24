@@ -6,6 +6,16 @@ docker_project_name: "{{ forgejo_project_name }}"
 # Default path to git repositories (in project data directory)
 forgejo_git_repositories_default: ./data/git/repositories
 
+# Default Forgejo storage directories (in project data directory)
+forgejo_storage_attachments_default:       ./data/gitea/attachments
+forgejo_storage_lfs_default:               ./data/git/lfs
+forgejo_storage_avatars_default:           ./data/gitea/avatars
+forgejo_storage_repo_avatars_default:      ./data/gitea/repo-avatars
+forgejo_storage_repo_archive_default:      ./data/gitea/repo-archive
+forgejo_storage_packages_default:          ./data/gitea/packages
+forgejo_storage_actions_log_default:       ./data/gitea/actions_log
+forgejo_storage_actions_artifacts_default: ./data/gitea/actions_artifacts
+
 # Default Forgejo log directory (in project data directory)
 forgejo_log_directory_default: ./data/gitea/log
 
