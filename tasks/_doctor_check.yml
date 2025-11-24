@@ -6,7 +6,7 @@
   block:
     - name: Diagnose
       ansible.builtin.command: >-
-        {{ docker_cmd }} compose exec -u git forgejo
+        {{ docker_compose_cmd }} exec -u git forgejo
           forgejo doctor check --color=false
       args:
         chdir: "{{ docker_project_path }}"

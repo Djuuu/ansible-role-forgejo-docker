@@ -6,7 +6,7 @@
   ansible.builtin.shell:
     cmd: |
       set -o pipefail
-      {{ docker_cmd }} compose exec -u git forgejo \
+      {{ docker_compose_cmd }} exec -u git forgejo \
         forgejo admin user list --admin | tail -n +2 | wc -l
     executable: /bin/bash
   args:
@@ -22,7 +22,7 @@
   block:
     - name: Create admin user
       ansible.builtin.command: >-
-        {{ docker_cmd }} compose exec -u git forgejo
+        {{ docker_compose_cmd }} exec -u git forgejo
           forgejo admin user create
             --admin
             --username "{{ forgejo_admin_username }}"
