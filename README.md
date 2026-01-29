@@ -49,9 +49,9 @@ forgejo_service_additional_options: |
 forgejo_version: 14
 
 # UID container is running as
-forgejo_puid: "{{ ansible_user_uid }}"
+forgejo_puid: "{{ ansible_facts['user_uid'] }}"
 # GID container is running as
-forgejo_pgid: "{{ ansible_user_gid }}"
+forgejo_pgid: "{{ ansible_facts['user_gid'] }}"
 
 # Port bound to host for HTTP
 forgejo_http_port: 3000
